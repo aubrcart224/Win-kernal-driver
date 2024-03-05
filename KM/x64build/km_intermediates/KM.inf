@@ -1,0 +1,80 @@
+;
+; KM.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=System ; TODO: specify appropriate Class
+ClassGuid={4d36e97d-e325-11ce-bfc1-08002be10318} ; TODO: specify appropriate ClassGuid
+Provider=%ManufacturerName%
+CatalogFile=KM.cat
+DriverVer = 03/04/2024,22.43.53.398
+PnpLockdown=1
+
+[DestinationDirs]
+DefaultDestDir = 12
+KM_Device_CoInstaller_CopyFiles = 11
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+KM.sys  = 1,,
+;
+
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NTamd64
+
+[Standard.NTamd64]
+%KM.DeviceDesc%=KM_Device, Root\KM ; TODO: edit hw-id
+
+[KM_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+KM.sys
+
+;-------------- Service installation
+[KM_Device.NT.Services]
+AddService = KM,%SPSVCINST_ASSOCSERVICE%, KM_Service_Inst
+
+; -------------- KM driver install sections
+[KM_Service_Inst]
+DisplayName    = %KM.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\KM.sys
+
+;
+;--- KM_Device Coinstaller installation ------
+;
+
+[KM_Device.NT.CoInstallers]
+AddReg=KM_Device_CoInstaller_AddReg
+CopyFiles=KM_Device_CoInstaller_CopyFiles
+
+[KM_Device_CoInstaller_AddReg]
+;
+
+
+[KM_Device_CoInstaller_CopyFiles]
+;
+
+
+[KM_Device.NT.Wdf]
+KmdfService =  KM, KM_wdfsect
+[KM_wdfsect]
+KmdfLibraryVersion = 1.15
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="<Your manufacturer name>" ;TODO: Replace with your manufacturer name
+DiskName = "KM Installation Disk"
+KM.DeviceDesc = "KM Device"
+KM.SVCDESC = "KM Service"
