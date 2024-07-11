@@ -10,20 +10,23 @@ extern "C" {
 
 	//implent read andn write to process memory insdier driver 
 	NTKERNELAPI NTSTATUS MmCopyVirtualMemory(PEPROCESS FromProcess, 
-													PVOID FromAddress, 
-													PEPROCESS ToProcess, 
-													PVOID ToAddress, 
-													SIZE_T BufferSize, 
-													KPROCESSOR_MODE PreviousMode, 
-													PSIZE_T NumberOfBytesCopied);
+											 PVOID FromAddress, 
+											 PEPROCESS ToProcess, 
+											 PVOID ToAddress, 
+											 SIZE_T BufferSize, 
+											 KPROCESSOR_MODE PreviousMode, 
+											 PSIZE_T NumberOfBytesCopied);
 
 }
+
+
 void debug_print(PCSTR text) {
 
 	KdPrintEx((DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL, text));
 }
 
 
+//namespace driver 
 namespace driver {
 	namespace codes {
 			constexpr ULONG attach = 
@@ -34,8 +37,7 @@ namespace driver {
 
 			constexpr ULONG write =
 				CTL_CODE(FILE_DEVICE_UNKNOWN, 0x698, METHOD_BUFFERED, FILE_SPECIAL_ACCESS);
-			//namespace codes
-
+		
 	}
 
 	//shared between user and kernel space
@@ -88,7 +90,7 @@ namespace driver {
 
 
 
-		//Target process we want to R&W memory to. 
+		//Target process we want to R&W memory to. in
 		static PEPROCESS target_process = nullptr;
 
 		//switch case to determine which code was passed through.
@@ -133,7 +135,7 @@ namespace driver {
 		//return irp->IoStatus.Status;
 	}
 
-}	//namespace driver
+}	
 
 
 NTSTATUS driver_main(PDRIVER_OBJECT driver_object, PUNICODE_STRING registry_path) {
@@ -184,7 +186,6 @@ NTSTATUS driver_main(PDRIVER_OBJECT driver_object, PUNICODE_STRING registry_path
 	return status;
 	
 }
-
 
 
 // KDmapper will call this "entry point" but params will be null 

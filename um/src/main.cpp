@@ -28,14 +28,12 @@ static DWORD get_process_id(const wchar_t* process_name) {
 					}
 				}
 			}
-		 
 	}
 
 	CloseHandle(snap_shot);
 
 	return process_id;
 }
-
 
 static std::uintptr_t get_module_base(const DWORD pid, const wchar_t* module_name) {
 
@@ -59,13 +57,12 @@ static std::uintptr_t get_module_base(const DWORD pid, const wchar_t* module_nam
 		//if not, loop through the rest of the modules.
 		else {
 			while (Module32NextW(snap_shot, &entry) == TRUE) {
-				if (_wcsicmp(module_name, entry.szModule) != NULL) { // maybe sub null ptr here or NULL (NULL actually works)
+				if (_wcsicmp(module_name, entry.szModule) != 0) { // maybe sub null ptr here or NULL (NULL actually works)
 					module_base = reinterpret_cast<std::uintptr_t>(entry.modBaseAddr);
 					break;
 				}
 			}
 		}
-
 	}
 
 	CloseHandle(snap_shot);
@@ -138,19 +135,10 @@ namespace driver {
 
 		DeviceIoControl(driver_handle, codes::write, &r, sizeof(r), &r, sizeof(r), nullptr, nullptr);
 	}
-
-
 }
 
-
-
 int main() {
-	//std::cout << "hello world\n";
-	    
-
-
-
-
+	
 	//notepad.exe
 	//get process id of notepad 
 	const DWORD pid = get_process_id(L"notepad.exe");
@@ -175,15 +163,13 @@ int main() {
 
 	if (driver::attach_to_process(driver, pid) == true) {
 		std::cout << "Attachment success\n";
-		
-		
 	}
 
 	CloseHandle(driver);
 
 	std::cin.get();
 
-		return 0;
+	return 0;
 }
 
 
