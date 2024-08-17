@@ -2,7 +2,7 @@
 #include <Windows.h>
 #include <TLHelp32.h>
 
-
+//making sure this thing is real 
 static DWORD get_process_id(const wchar_t* process_name) {
 
 	DWORD process_id = 0;
@@ -12,6 +12,7 @@ static DWORD get_process_id(const wchar_t* process_name) {
 		return process_id;
 	}
 
+	bool match = false; //check if the process name matches the one we want.  
 
 	PROCESSENTRY32W entry = {};
 	entry.dwSize = sizeof(entry);
